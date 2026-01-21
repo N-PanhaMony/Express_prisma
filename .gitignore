@@ -1,0 +1,30 @@
+# Node modules
+**/node_modules/
+
+# Environment variables
+.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Prisma generated clientç
+src/generated/prisma/
+
+# Prisma migrations (optional: keep if you want version-controlled migrations)
+prisma/migrations/
+
+# MacOS
+.DS_Store
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
