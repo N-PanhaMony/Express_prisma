@@ -1,6 +1,7 @@
 import {prisma} from "../config/prisma.js";
 import bcrypt from "bcryptjs";
 
+// Register controller
 const register = async (req, res) => {
   const {name , email , password} = req.body;
   
@@ -42,4 +43,38 @@ const register = async (req, res) => {
 
 } 
 
-export { register };
+// login controller 
+const login = async (req, res) => {
+  const {user, email, password } = req.body;
+
+  // Find user by email
+  const userExits = await prisma.user.findUnique({
+    where: {
+      email: email
+    }
+  });
+
+  if (!userExits) {
+    return res.status(400).json({ error: "Invalid email or password" });
+  }
+
+  //verify password
+  const isPasswordValid = await bcrypt.compare(password, userExits.password);
+  if (!isPasswordValid) {
+    return res.status(400).json({ error: "Invalid email or password" });
+  }
+
+  res.status(200).json({
+    message: "Login successful",
+    status: "success",
+    user: {
+      id: userExits.id,
+      name: userExits.name,
+      email: userExits.email
+    }
+  });
+
+
+}
+
+export { register, login };
