@@ -1,5 +1,6 @@
 import {prisma} from "../config/prisma.js";
 import bcrypt from "bcryptjs";
+import { generateToken } from "../utils/generateToken.js";
 
 // Register controller
 const register = async (req, res) => {
@@ -30,6 +31,9 @@ const register = async (req, res) => {
       password: hashedPassword
     }
   });
+
+  //Gernerate jwt token
+  const token = generateToken(user.id , res);
   
   res.status(201).json({
     message: "User registered successfully",
@@ -39,42 +43,58 @@ const register = async (req, res) => {
       name: user.name,
       email: user.email
     }
+    ,token: token
   })
 
 } 
 
 // login controller 
 const login = async (req, res) => {
-  const {user, email, password } = req.body;
+  const { email, password } = req.body;
 
   // Find user by email
-  const userExits = await prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: {
       email: email
     }
   });
 
-  if (!userExits) {
+  if (!user) {
     return res.status(400).json({ error: "Invalid email or password" });
   }
 
   //verify password
-  const isPasswordValid = await bcrypt.compare(password, userExits.password);
+  const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) {
     return res.status(400).json({ error: "Invalid email or password" });
   }
 
-  res.status(200).json({
+  //Gernerate jwt token
+  const token = generateToken(user.id, res);
+
+  res.status(201).json({
     message: "Login successful",
     status: "success",
     user: {
-      id: userExits.id,
-      name: userExits.name,
-      email: userExits.email
-    }
+      id: user.id,
+      name: user.name,
+      email: user.email
+    },
+    token: token
   });
-
-
 }
 
-export { register, login };
+const logout = (req, res) => {
+
+  res.cookie('jwt', '', {
+    httpOnly: true,
+    expires: new Date(0) // Set the cookie to expire immediately
+  });
+
+  res.status(200).json({ 
+    status: "success",
+    message: "Logout successful" 
+  });
+}
+
+export { register, login , logout };
