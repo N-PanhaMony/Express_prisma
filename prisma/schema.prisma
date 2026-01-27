@@ -14,24 +14,55 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String?
+  id        String   @id @default(uuid())
+  name      String
   email     String   @unique
   password  String
-
-  posts     Post[]   // 👈 relation
-
+  role      Role     @default(USER)
+  posts     Post[]
+  comments  Comment[]
   createdAt DateTime @default(now())
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
+  id        String    @id @default(uuid())
   title     String
-  content   String?
-  
-  authorId  Int
-  author    User     @relation(fields: [authorId], references: [id])
+  slug      String    @unique
+  content   String
+  published Boolean   @default(false)
+  authorId  String
+  author    User      @relation(fields: [authorId], references: [id])
+  tags      PostTag[]
+  comments  Comment[]
+  createdAt DateTime  @default(now())
+}
 
+model Tag {
+  id    String    @id @default(uuid())
+  name  String    @unique
+  posts PostTag[]
+}
+
+model PostTag {
+  postId String
+  tagId  String
+  post   Post @relation(fields: [postId], references: [id])
+  tag    Tag  @relation(fields: [tagId], references: [id])
+
+  @@id([postId, tagId])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  postId    String
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
 }
 
+enum Role {
+  USER
+  ADMIN
+}
