@@ -30,19 +30,8 @@ async function main() {
     },
   });
 
-  const user2 = await prisma.user.create({
-    data: {
-      name: 'bot2',
-      email: 'bot2@example.com',
-      password: 'bot123',
-    },
-  });
-
   // 2️⃣ Create Tags
   const tag1 = await prisma.tag.create({ data: { name: 'JavaScript' } });
-  const tag2 = await prisma.tag.create({ data: { name: 'Node.js' } });
-  const tag3 = await prisma.tag.create({ data: { name: 'Prisma' } });
-
   // 3️⃣ Create Posts
   const post1 = await prisma.post.create({
     data: {
@@ -60,21 +49,6 @@ async function main() {
     },
   });
 
-  const post2 = await prisma.post.create({
-    data: {
-      title: 'Getting Started with Prisma',
-      slug: 'getting-started-with-prisma',
-      content: 'Prisma is an ORM that helps you work with databases...',
-      published: true,
-      authorId: user2.id,
-      tags: {
-        create: [
-          { tagId: tag2.id },
-          { tagId: tag3.id },
-        ],
-      },
-    },
-  });
 
   // 4️⃣ Create Comments
   await prisma.comment.create({
@@ -82,14 +56,6 @@ async function main() {
       content: 'Great article!',
       postId: post1.id,
       userId: user2.id,
-    },
-  });
-
-  await prisma.comment.create({
-    data: {
-      content: 'Thanks for sharing!',
-      postId: post2.id,
-      userId: user1.id,
     },
   });
 

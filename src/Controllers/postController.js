@@ -20,7 +20,8 @@ export const getAllPosts = async (req, res) => {
 
 // CREATE new post
 export const createPost = async (req, res) => {
-  const { title, content, published = false, authorId, tagIds = [] } = req.body;
+  const { title, content, published = false, tagIds = [] } = req.body;
+
   try {
     const post = await prisma.post.create({
       data: {
@@ -28,14 +29,21 @@ export const createPost = async (req, res) => {
         slug: title.toLowerCase().replace(/\s+/g, '-'),
         content,
         published,
-        authorId,
-        tags: { create: tagIds.map(tagId => ({ tagId })) },
+        authorId: req.user.id, // use logged-in user ID
+        tags: tagIds.length
+          ? {
+              create: tagIds.map(tagId => ({
+                tag: { connect: { id: tagId } },
+              })),
+            }
+          : undefined,
       },
-      include: { tags: { include: { tag: true } } },
+      include: postInclude,
     });
+
     res.status(201).json(post);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Error creating post' });
+    console.error("Error creating post:", err);
+    res.status(500).json({ message: "Error creating post" });
   }
 };
