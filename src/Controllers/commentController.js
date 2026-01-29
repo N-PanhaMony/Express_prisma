@@ -1,11 +1,12 @@
 import { prisma } from '../config/prisma.js';
 
+// Get all comments (public)
 export const getAllComments = async (req, res) => {
   try {
     const comments = await prisma.comment.findMany({
       include: {
         post: true,
-        user: true, // 👈 useful
+        user: true,
       },
     });
     res.json(comments);
@@ -15,13 +16,12 @@ export const getAllComments = async (req, res) => {
   }
 };
 
+// Create new comment (requires login)
 export const createComment = async (req, res) => {
-  const { content, postId, userId } = req.body;
+  const { content, postId } = req.body;
 
-  if (!content || !postId || !userId) {
-    return res.status(400).json({
-      message: 'content, postId, and userId are required',
-    });
+  if (!content || !postId) {
+    return res.status(400).json({ message: "content and postId are required" });
   }
 
   try {
@@ -29,12 +29,17 @@ export const createComment = async (req, res) => {
       data: {
         content,
         postId,
-        userId,
+        userId: req.user.id, // ✅ authenticated user's ID
+      },
+      include: {
+        user: true,
+        post: true,
       },
     });
+
     res.status(201).json(newComment);
-  } catch (error) {
-    console.error('Error creating comment:', error);
-    res.status(500).json({ error: 'Internal server error' });
+  } catch (err) {
+    console.error("Error creating comment:", err);
+    res.status(500).json({ message: "Error creating comment" });
   }
 };

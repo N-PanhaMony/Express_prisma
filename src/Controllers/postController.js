@@ -47,3 +47,32 @@ export const createPost = async (req, res) => {
     res.status(500).json({ message: "Error creating post" });
   }
 };
+
+// DELETE a post by ID
+export const deletePost = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const existingPost = await prisma.post.findUnique({ where: { id } });
+    if (!existingPost) return res.status(404).json({ message: "Post not found" });
+
+    if (existingPost.authorId !== req.user.id && req.user.role !== "ADMIN") {
+      return res.status(403).json({ message: "Not authorized to delete this post" });
+    }
+
+    // Delete related PostTag records
+    await prisma.postTag.deleteMany({ where: { postId: id } });
+
+    // Delete related Comments
+    await prisma.comment.deleteMany({ where: { postId: id } });
+
+    // Now delete the post
+    await prisma.post.delete({ where: { id } });
+
+    res.json({ message: "Post deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting post:", err);
+    res.status(500).json({ message: "Error deleting post" });
+  }
+};
+

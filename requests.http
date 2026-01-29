@@ -1,0 +1,68 @@
+@baseUrl = http://localhost:3000
+@token = YOUR_JWT_TOKEN_HERE
+
+### REGISTER NEW USER
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "New User",
+  "email": "newuser@example.com",
+  "password": "password123"
+}
+
+### LOGIN
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "admin123"
+}
+
+### GET ALL POSTS
+GET {{baseUrl}}/posts
+Authorization: Bearer {{token}}
+
+### CREATE NEW POST
+POST {{baseUrl}}/posts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "REST Client Test Post v33",
+  "content": "Testing post creation",
+  "published": true,
+  "tagIds": ["TAG_ID_HERE"]
+}
+
+### DELETE POST
+DELETE {{baseUrl}}/posts/POST_ID_HERE
+Authorization: Bearer {{token}}
+
+### GET ALL TAGS
+GET {{baseUrl}}/tags
+Authorization: Bearer {{token}}
+
+### CREATE NEW TAG
+POST {{baseUrl}}/tags
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Frontend"
+}
+
+### GET ALL COMMENTS
+GET {{baseUrl}}/comments
+Authorization: Bearer {{token}}
+
+### CREATE NEW COMMENT
+POST {{baseUrl}}/comments
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "content": "This is a test comment",
+  "postId": "POST_ID_HERE"
+}
