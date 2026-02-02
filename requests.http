@@ -1,5 +1,7 @@
 @baseUrl = http://localhost:3000
 @token = YOUR_JWT_TOKEN_HERE
+@postId = 
+@tagId = 
 
 ### REGISTER NEW USER
 POST {{baseUrl}}/auth/register
@@ -24,26 +26,6 @@ Content-Type: application/json
 GET {{baseUrl}}/posts
 Authorization: Bearer {{token}}
 
-### CREATE NEW POST
-POST {{baseUrl}}/posts
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-  "title": "REST Client Test Post v33",
-  "content": "Testing post creation",
-  "published": true,
-  "tagIds": ["TAG_ID_HERE"]
-}
-
-### DELETE POST
-DELETE {{baseUrl}}/posts/POST_ID_HERE
-Authorization: Bearer {{token}}
-
-### GET ALL TAGS
-GET {{baseUrl}}/tags
-Authorization: Bearer {{token}}
-
 ### CREATE NEW TAG
 POST {{baseUrl}}/tags
 Content-Type: application/json
@@ -52,6 +34,32 @@ Authorization: Bearer {{token}}
 {
   "name": "Frontend"
 }
+
+### Save created tag ID to variable
+# @tagId = {{response.body.id}}
+
+### CREATE NEW POST
+POST {{baseUrl}}/posts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Dynamic REST Client Test Post",
+  "content": "This post content is long enough to pass validation.",
+  "published": true,
+  "tagIds": ["{{tagId}}"]
+}
+
+### Save created post ID to variable
+# @postId = {{response.body.id}}
+
+### DELETE POST
+DELETE {{baseUrl}}/posts/{{postId}}
+Authorization: Bearer {{token}}
+
+### GET ALL TAGS
+GET {{baseUrl}}/tags
+Authorization: Bearer {{token}}
 
 ### GET ALL COMMENTS
 GET {{baseUrl}}/comments
@@ -63,6 +71,6 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "content": "This is a test comment",
-  "postId": "POST_ID_HERE"
+  "content": "This is a dynamic test comment",
+  "postId": "{{postId}}"
 }
