@@ -1,9 +1,18 @@
-@baseUrl = http://localhost:3000
-@token = YOUR_JWT_TOKEN_HERE
-@postId = 
-@tagId = 
+# ===============================
+# 🌐 Environment URLs & Variables
+# ===============================
 
-### REGISTER NEW USER
+@localUrl = http://localhost:3000
+@prodUrl = https://express-prisma-z4x3.onrender.com
+@baseUrl = {{localUrl}}   # Switch to {{prodUrl}} for Render
+@token =
+@postId =
+@tagId =
+
+# ===============================
+# 📝 REGISTER NEW USER
+# ===============================
+
 POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
@@ -13,7 +22,10 @@ Content-Type: application/json
   "password": "password123"
 }
 
-### LOGIN
+# ===============================
+# 🔑 LOGIN
+# ===============================
+
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
@@ -22,11 +34,20 @@ Content-Type: application/json
   "password": "admin123"
 }
 
-### GET ALL POSTS
+# Save JWT token from login response
+# @token = {{response.body.token}}
+
+# ===============================
+# 📄 GET ALL POSTS
+# ===============================
+
 GET {{baseUrl}}/posts
 Authorization: Bearer {{token}}
 
-### CREATE NEW TAG
+# ===============================
+# 🏷 CREATE NEW TAG
+# ===============================
+
 POST {{baseUrl}}/tags
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -35,10 +56,13 @@ Authorization: Bearer {{token}}
   "name": "Frontend"
 }
 
-### Save created tag ID to variable
+# Save created tag ID
 # @tagId = {{response.body.id}}
 
-### CREATE NEW POST
+# ===============================
+# ✏️ CREATE NEW POST
+# ===============================
+
 POST {{baseUrl}}/posts
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -50,22 +74,13 @@ Authorization: Bearer {{token}}
   "tagIds": ["{{tagId}}"]
 }
 
-### Save created post ID to variable
+# Save created post ID
 # @postId = {{response.body.id}}
 
-### DELETE POST
-DELETE {{baseUrl}}/posts/{{postId}}
-Authorization: Bearer {{token}}
+# ===============================
+# 💬 CREATE NEW COMMENT
+# ===============================
 
-### GET ALL TAGS
-GET {{baseUrl}}/tags
-Authorization: Bearer {{token}}
-
-### GET ALL COMMENTS
-GET {{baseUrl}}/comments
-Authorization: Bearer {{token}}
-
-### CREATE NEW COMMENT
 POST {{baseUrl}}/comments
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -74,3 +89,24 @@ Authorization: Bearer {{token}}
   "content": "This is a dynamic test comment",
   "postId": "{{postId}}"
 }
+
+# ===============================
+# 🗑 DELETE POST
+# ===============================
+
+DELETE {{baseUrl}}/posts/{{postId}}
+Authorization: Bearer {{token}}
+
+# ===============================
+# 🏷 GET ALL TAGS
+# ===============================
+
+GET {{baseUrl}}/tags
+Authorization: Bearer {{token}}
+
+# ===============================
+# 💬 GET ALL COMMENTS
+# ===============================
+
+GET {{baseUrl}}/comments
+Authorization: Bearer {{token}}
