@@ -4,15 +4,12 @@
 
 @localUrl = http://localhost:3000
 @prodUrl = https://express-prisma-z4x3.onrender.com
-@baseUrl = {{localUrl}}   # Switch to {{prodUrl}} for Render
-@token =
+@baseUrl = {{localUrl}}   # change to {{prodUrl}} for production
+@token = 
 @postId =
 @tagId =
 
-# ===============================
-# 📝 REGISTER NEW USER
-# ===============================
-
+### 📝 REGISTER NEW USER
 POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
@@ -22,10 +19,7 @@ Content-Type: application/json
   "password": "password123"
 }
 
-# ===============================
-# 🔑 LOGIN
-# ===============================
-
+### 🔑 LOGIN
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
@@ -37,17 +31,11 @@ Content-Type: application/json
 # Save JWT token from login response
 # @token = {{response.body.token}}
 
-# ===============================
-# 📄 GET ALL POSTS
-# ===============================
-
+### 📄 GET ALL POSTS
 GET {{baseUrl}}/posts
 Authorization: Bearer {{token}}
 
-# ===============================
-# 🏷 CREATE NEW TAG
-# ===============================
-
+### 🏷 CREATE NEW TAG
 POST {{baseUrl}}/tags
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -59,10 +47,7 @@ Authorization: Bearer {{token}}
 # Save created tag ID
 # @tagId = {{response.body.id}}
 
-# ===============================
-# ✏️ CREATE NEW POST
-# ===============================
-
+### ✏️ CREATE NEW POST
 POST {{baseUrl}}/posts
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -77,10 +62,7 @@ Authorization: Bearer {{token}}
 # Save created post ID
 # @postId = {{response.body.id}}
 
-# ===============================
-# 💬 CREATE NEW COMMENT
-# ===============================
-
+### 💬 CREATE NEW COMMENT
 POST {{baseUrl}}/comments
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -90,23 +72,14 @@ Authorization: Bearer {{token}}
   "postId": "{{postId}}"
 }
 
-# ===============================
-# 🗑 DELETE POST
-# ===============================
-
+### 🗑 DELETE POST
 DELETE {{baseUrl}}/posts/{{postId}}
 Authorization: Bearer {{token}}
 
-# ===============================
-# 🏷 GET ALL TAGS
-# ===============================
-
+### 🏷 GET ALL TAGS
 GET {{baseUrl}}/tags
 Authorization: Bearer {{token}}
 
-# ===============================
-# 💬 GET ALL COMMENTS
-# ===============================
-
+### 💬 GET ALL COMMENTS
 GET {{baseUrl}}/comments
 Authorization: Bearer {{token}}
